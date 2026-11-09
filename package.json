@@ -1,0 +1,21 @@
+{
+  "name": "horizons-crm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Horizons CRM — CRM comercial multiempresa (SaaS) para pequenas empresas",
+  "author": "Diego Oliveira da Silva",
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @horizons/api --filter @horizons/web dev",
+    "build": "pnpm --filter @horizons/api build && pnpm --filter @horizons/web build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "db:migrate": "pnpm --filter @horizons/api db:migrate",
+    "db:seed": "pnpm --filter @horizons/api db:seed",
+    "db:reset": "pnpm --filter @horizons/api db:reset"
+  }
+}

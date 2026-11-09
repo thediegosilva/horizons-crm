@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, tipos e testes
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: horizons
+          POSTGRES_PASSWORD: ci-password
+          POSTGRES_DB: horizons_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U horizons -d horizons_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      # DATABASE_URL não é usado pelos testes, mas precisa existir e ser diferente do banco de testes.
+      DATABASE_URL: postgresql://horizons:ci-password@localhost:5432/horizons?schema=public
+      TEST_DATABASE_URL: postgresql://horizons:ci-password@localhost:5432/horizons_test?schema=public
+      NEXT_TELEMETRY_DISABLED: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Gerar Prisma Client
+        run: pnpm --filter @horizons/api db:generate
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Lint
+        run: pnpm lint
+      - name: Testes (unitários + integração com PostgreSQL)
+        run: pnpm test
+      - name: Build
+        run: pnpm build
+
+  docker:
+    name: Build das imagens Docker
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: API
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/api/Dockerfile
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Web
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/web/Dockerfile
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

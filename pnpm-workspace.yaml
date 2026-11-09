@@ -1,0 +1,13 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Pacotes autorizados a executar scripts de instalação (binários nativos)
+allowBuilds:
+  '@prisma/engines': true
+  prisma: true
+  argon2: true
+  esbuild: true
+  '@scarf/scarf': false
+  sharp: true
+  unrs-resolver: true

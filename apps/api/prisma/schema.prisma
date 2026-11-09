@@ -1,0 +1,294 @@
+// Horizons CRM — modelo de dados
+// Convenções:
+// - Todo dado de negócio pertence a uma organização (organizationId) → isolamento multiempresa.
+// - Valores monetários em centavos (Int) para evitar erros de ponto flutuante.
+// - Tabelas e colunas em snake_case no banco.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  OPERATOR
+}
+
+enum CustomerType {
+  INDIVIDUAL
+  COMPANY
+}
+
+enum ProductType {
+  PRODUCT
+  SERVICE
+}
+
+enum OrderStatus {
+  QUOTE
+  AWAITING_PAYMENT
+  PAID
+  PROCESSING
+  COMPLETED
+  CANCELED
+}
+
+enum FinancialType {
+  INCOME
+  EXPENSE
+}
+
+enum FinancialStatus {
+  PENDING
+  PAID
+  CANCELED
+}
+
+model Organization {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  isDemo    Boolean  @default(false) @map("is_demo")
+  orderSeq  Int      @default(0) @map("order_seq")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users            User[]
+  customers        Customer[]
+  products         Product[]
+  orders           Order[]
+  financialEntries FinancialEntry[]
+  activities       ActivityLog[]
+  notifications    Notification[]
+
+  @@map("organizations")
+}
+
+model User {
+  id             String    @id @default(uuid()) @db.Uuid
+  organizationId String    @map("organization_id") @db.Uuid
+  name           String
+  email          String    @unique
+  passwordHash   String    @map("password_hash")
+  role           Role      @default(OPERATOR)
+  active         Boolean   @default(true)
+  lastLoginAt    DateTime? @map("last_login_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  sessions       Session[]
+  ordersCreated  Order[]
+  statusChanges  OrderStatusHistory[]
+  activities     ActivityLog[]
+  notifications  Notification[]
+  financeCreated FinancialEntry[]
+
+  @@index([organizationId])
+  @@map("users")
+}
+
+model Session {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  /// SHA-256 do token; o token em si só existe no cookie do usuário.
+  tokenHash  String   @unique @map("token_hash")
+  expiresAt  DateTime @map("expires_at")
+  ip         String?
+  userAgent  String?  @map("user_agent")
+  createdAt  DateTime @default(now()) @map("created_at")
+  lastUsedAt DateTime @default(now()) @map("last_used_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model Customer {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @map("organization_id") @db.Uuid
+  type           CustomerType @default(INDIVIDUAL)
+  name           String
+  email          String?
+  phone          String?
+  document       String?
+  zipCode        String?      @map("zip_code")
+  street         String?
+  number         String?
+  complement     String?
+  district       String?
+  city           String?
+  state          String?      @db.Char(2)
+  notes          String?
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  orders       Order[]
+
+  @@unique([organizationId, document])
+  @@index([organizationId, createdAt])
+  @@index([organizationId, name])
+  @@map("customers")
+}
+
+model Product {
+  id             String      @id @default(uuid()) @db.Uuid
+  organizationId String      @map("organization_id") @db.Uuid
+  type           ProductType @default(PRODUCT)
+  name           String
+  sku            String
+  description    String?
+  category       String
+  priceCents     Int         @map("price_cents")
+  stock          Int         @default(0)
+  minStock       Int         @default(0) @map("min_stock")
+  active         Boolean     @default(true)
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  orderItems   OrderItem[]
+
+  @@unique([organizationId, sku])
+  @@index([organizationId, category])
+  @@map("products")
+}
+
+model Order {
+  id             String      @id @default(uuid()) @db.Uuid
+  organizationId String      @map("organization_id") @db.Uuid
+  /// Número sequencial por organização (exibido como PED-00001).
+  number         Int
+  customerId     String      @map("customer_id") @db.Uuid
+  createdById    String?     @map("created_by_id") @db.Uuid
+  status         OrderStatus @default(QUOTE)
+  subtotalCents  Int         @map("subtotal_cents")
+  discountCents  Int         @default(0) @map("discount_cents")
+  totalCents     Int         @map("total_cents")
+  /// Indica se o estoque dos itens foi baixado (reservado) para este pedido.
+  stockReserved  Boolean     @default(false) @map("stock_reserved")
+  notes          String?
+  paidAt         DateTime?   @map("paid_at")
+  completedAt    DateTime?   @map("completed_at")
+  canceledAt     DateTime?   @map("canceled_at")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  organization     Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer         Customer             @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  createdBy        User?                @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  items            OrderItem[]
+  statusHistory    OrderStatusHistory[]
+  financialEntries FinancialEntry[]
+
+  @@unique([organizationId, number])
+  @@index([organizationId, status])
+  @@index([organizationId, createdAt])
+  @@index([customerId])
+  @@map("orders")
+}
+
+model OrderItem {
+  id             String @id @default(uuid()) @db.Uuid
+  orderId        String @map("order_id") @db.Uuid
+  productId      String @map("product_id") @db.Uuid
+  /// Snapshot dos dados do produto no momento da venda.
+  productName    String @map("product_name")
+  productSku     String @map("product_sku")
+  quantity       Int
+  unitPriceCents Int    @map("unit_price_cents")
+  discountCents  Int    @default(0) @map("discount_cents")
+  totalCents     Int    @map("total_cents")
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+model OrderStatusHistory {
+  id         String       @id @default(uuid()) @db.Uuid
+  orderId    String       @map("order_id") @db.Uuid
+  fromStatus OrderStatus? @map("from_status")
+  toStatus   OrderStatus  @map("to_status")
+  note       String?
+  userId     String?      @map("user_id") @db.Uuid
+  createdAt  DateTime     @default(now()) @map("created_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user  User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@map("order_status_history")
+}
+
+model FinancialEntry {
+  id             String          @id @default(uuid()) @db.Uuid
+  organizationId String          @map("organization_id") @db.Uuid
+  type           FinancialType
+  status         FinancialStatus @default(PENDING)
+  description    String
+  category       String
+  amountCents    Int             @map("amount_cents")
+  dueDate        DateTime        @map("due_date") @db.Date
+  paidAt         DateTime?       @map("paid_at") @db.Date
+  notes          String?
+  /// Preenchido quando o lançamento foi gerado automaticamente por um pedido.
+  orderId        String?         @map("order_id") @db.Uuid
+  createdById    String?         @map("created_by_id") @db.Uuid
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  order        Order?       @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  createdBy    User?        @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, type, status])
+  @@index([organizationId, dueDate])
+  @@index([organizationId, paidAt])
+  @@index([orderId])
+  @@map("financial_entries")
+}
+
+model ActivityLog {
+  id             String   @id @default(uuid()) @db.Uuid
+  organizationId String   @map("organization_id") @db.Uuid
+  userId         String?  @map("user_id") @db.Uuid
+  action         String
+  entityType     String   @map("entity_type")
+  entityId       String?  @map("entity_id") @db.Uuid
+  description    String
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, createdAt])
+  @@map("activity_logs")
+}
+
+model Notification {
+  id             String    @id @default(uuid()) @db.Uuid
+  organizationId String    @map("organization_id") @db.Uuid
+  userId         String    @map("user_id") @db.Uuid
+  title          String
+  message        String
+  link           String?
+  readAt         DateTime? @map("read_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@map("notifications")
+}
