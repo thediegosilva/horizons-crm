@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { errorProps, Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { PageHeader } from '@/components/ui/misc';
 import { useAuth } from '@/hooks/use-auth';
 import { useMounted } from '@/hooks/use-mounted';
@@ -93,10 +94,10 @@ function PasswordCard() {
       <CardContent>
         <form onSubmit={handleSubmit((d) => mutation.mutate(d))} className="space-y-4" noValidate>
           <Field label="Senha atual" htmlFor="currentPassword" error={errors.currentPassword?.message}>
-            <Input id="currentPassword" type="password" autoComplete="current-password" {...register('currentPassword')} {...errorProps('currentPassword', errors.currentPassword?.message)} />
+            <PasswordInput id="currentPassword" autoComplete="current-password" {...register('currentPassword')} {...errorProps('currentPassword', errors.currentPassword?.message)} />
           </Field>
           <Field label="Nova senha" htmlFor="newPassword" error={errors.newPassword?.message} hint="Mínimo de 8 caracteres, com maiúscula, minúscula e número.">
-            <Input id="newPassword" type="password" autoComplete="new-password" {...register('newPassword')} {...errorProps('newPassword', errors.newPassword?.message)} />
+            <PasswordInput id="newPassword" autoComplete="new-password" {...register('newPassword')} {...errorProps('newPassword', errors.newPassword?.message)} />
           </Field>
           <div className="flex justify-end"><Button type="submit" loading={mutation.isPending}>Alterar senha</Button></div>
         </form>

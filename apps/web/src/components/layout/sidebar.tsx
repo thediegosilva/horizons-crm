@@ -20,7 +20,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         </Link>
       </div>
 
-      <div className="mx-3 mb-2 rounded-lg border border-border bg-card px-3 py-2.5">
+      <div className="surface mx-3 mb-2 rounded-lg border border-border bg-card px-3 py-2.5">
         <p className="truncate text-xs font-semibold">{user.organization.name}</p>
         <p className="text-[11px] text-muted-foreground">{ROLE_LABELS[user.role]}</p>
       </div>
@@ -46,11 +46,11 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
                         className={cn(
                           'group relative flex items-center gap-3 rounded-md px-2.5 py-2 text-sm font-medium transition-colors',
                           active
-                            ? 'bg-primary-soft text-primary'
+                            ? 'bg-gradient-to-r from-primary-soft to-primary-soft/30 text-primary ring-1 ring-primary/20 ring-inset'
                             : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                         )}
                       >
-                        {active && <span className="absolute top-1.5 bottom-1.5 -left-3 w-1 rounded-r-full bg-primary" aria-hidden />}
+                        {active && <span className="absolute top-1.5 bottom-1.5 -left-3 w-1 rounded-r-full bg-primary shadow-[0_0_12px_2px_var(--glow)]" aria-hidden />}
                         <item.icon className="size-[18px] shrink-0" aria-hidden />
                         {item.label}
                       </Link>

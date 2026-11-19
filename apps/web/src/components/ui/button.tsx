@@ -4,7 +4,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const variants = {
-  primary: 'bg-primary text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90',
+  primary: 'bg-primary text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90 dark:shadow-[0_0_20px_-4px_var(--glow)] dark:hover:shadow-[0_0_26px_-2px_var(--glow)]',
   secondary: 'bg-card text-foreground border border-border shadow-xs hover:bg-muted',
   ghost: 'text-muted-foreground hover:bg-muted hover:text-foreground',
   danger: 'bg-danger text-white shadow-sm hover:bg-danger/90',

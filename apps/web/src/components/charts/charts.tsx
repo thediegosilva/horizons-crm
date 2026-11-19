@@ -119,12 +119,19 @@ export function TrendAreaChart<T>({ data, xKey, series, tickFormat, labelFormat 
             <defs>
               {series.map((s) => (
                 <linearGradient key={s.key} id={`${id}-${s.key}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={s.color} stopOpacity={0.22} />
+                  <stop offset="0%" stopColor={s.color} stopOpacity={0.38} />
                   <stop offset="100%" stopColor={s.color} stopOpacity={0} />
                 </linearGradient>
               ))}
+              <filter id={`${id}-glow`} x="-10%" y="-30%" width="120%" height="160%">
+                <feGaussianBlur stdDeviation="3" result="b" />
+                <feMerge>
+                  <feMergeNode in="b" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
             </defs>
-            <CartesianGrid vertical={false} stroke="var(--chart-grid)" />
+            <CartesianGrid vertical={false} stroke="var(--chart-grid)" strokeDasharray="3 4" />
             <XAxis dataKey={xKey as string} tickFormatter={tickFormat} {...axisProps} minTickGap={16} />
             <YAxis tickFormatter={yFormat} {...axisProps} width={64} />
             <Tooltip
@@ -137,8 +144,9 @@ export function TrendAreaChart<T>({ data, xKey, series, tickFormat, labelFormat 
                 type="monotone"
                 dataKey={s.key as string}
                 stroke={s.color}
-                strokeWidth={2}
+                strokeWidth={2.25}
                 fill={`url(#${id}-${s.key})`}
+                filter={`url(#${id}-glow)`}
                 activeDot={{ r: 4, strokeWidth: 2, stroke: 'var(--card)' }}
                 isAnimationActive={false}
               />
@@ -152,12 +160,21 @@ export function TrendAreaChart<T>({ data, xKey, series, tickFormat, labelFormat 
 }
 
 export function ColumnChart<T>({ data, xKey, series, tickFormat, labelFormat = tickFormat, yFormat, caption, height = 240, className }: ChartProps<T>) {
+  const id = React.useId().replace(/:/g, '');
   return (
     <div className={cn('w-full', className)}>
       <div style={{ height }} aria-hidden>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data as Record<string, unknown>[]} margin={{ top: 8, right: 8, left: 0, bottom: 0 }} barGap={2} barCategoryGap="22%">
-            <CartesianGrid vertical={false} stroke="var(--chart-grid)" />
+            <defs>
+              {series.map((s) => (
+                <linearGradient key={s.key} id={`${id}-${s.key}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={s.color} stopOpacity={1} />
+                  <stop offset="100%" stopColor={s.color} stopOpacity={0.35} />
+                </linearGradient>
+              ))}
+            </defs>
+            <CartesianGrid vertical={false} stroke="var(--chart-grid)" strokeDasharray="3 4" />
             <XAxis dataKey={xKey as string} tickFormatter={tickFormat} {...axisProps} minTickGap={8} />
             <YAxis tickFormatter={yFormat} {...axisProps} width={64} allowDecimals={false} />
             <Tooltip
@@ -165,7 +182,7 @@ export function ColumnChart<T>({ data, xKey, series, tickFormat, labelFormat = t
               content={(p) => <ChartTooltip {...(p as TooltipContentProps<number, string>)} series={series} labelFormat={labelFormat} />}
             />
             {series.map((s) => (
-              <Bar key={s.key} dataKey={s.key as string} fill={s.color} radius={[4, 4, 0, 0]} maxBarSize={28} isAnimationActive={false} />
+              <Bar key={s.key} dataKey={s.key as string} fill={`url(#${id}-${s.key})`} radius={[4, 4, 0, 0]} maxBarSize={28} isAnimationActive={false} />
             ))}
           </BarChart>
         </ResponsiveContainer>
@@ -191,7 +208,7 @@ export function RankingBars({ rows, format }: { rows: { label: string; sublabel?
             <span className="shrink-0 font-medium tabular">{format(r.value)}</span>
           </div>
           <div className="h-2 rounded-full bg-muted">
-            <div className="h-2 rounded-full bg-chart-1" style={{ width: `${Math.max(2, (r.value / max) * 100)}%` }} />
+            <div className="h-2 rounded-full bg-gradient-to-r from-accent to-chart-1 shadow-[0_0_10px_-2px_var(--glow)]" style={{ width: `${Math.max(2, (r.value / max) * 100)}%` }} />
           </div>
         </li>
       ))}

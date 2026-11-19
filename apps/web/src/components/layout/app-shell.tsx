@@ -32,7 +32,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </aside>
         <div className="lg:pl-64">
           {user.organization.isDemo && (
-            <div className="flex items-center justify-center gap-2 bg-horizon px-4 py-1.5 text-center text-xs font-medium text-white">
+            <div className="flex items-center justify-center gap-2 border-b border-primary/20 bg-primary-soft px-4 py-1.5 text-center text-xs font-medium text-primary">
               <FlaskConical className="size-3.5 shrink-0" aria-hidden />
               Ambiente de demonstração — todos os dados exibidos são fictícios.
             </div>

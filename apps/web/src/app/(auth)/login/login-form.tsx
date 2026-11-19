@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { errorProps, Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { api, errorMessage } from '@/lib/api';
 
 const DEMO_ACCOUNTS = [
@@ -58,7 +59,7 @@ export function LoginForm() {
           <Input id="email" type="email" autoComplete="email" autoFocus {...register('email')} {...errorProps('email', errors.email?.message)} />
         </Field>
         <Field label="Senha" htmlFor="password" error={errors.password?.message}>
-          <Input id="password" type="password" autoComplete="current-password" {...register('password')} {...errorProps('password', errors.password?.message)} />
+          <PasswordInput id="password" autoComplete="current-password" {...register('password')} {...errorProps('password', errors.password?.message)} />
         </Field>
         <Button type="submit" size="lg" className="w-full" loading={isSubmitting}>
           Entrar

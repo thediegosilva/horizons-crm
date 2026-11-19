@@ -10,14 +10,14 @@ const highlights = [
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid min-h-dvh lg:grid-cols-[1.05fr_1fr]">
-      <section className="relative hidden overflow-hidden bg-[#0f0f1a] p-12 text-white lg:flex lg:flex-col">
-        <div className="pointer-events-none absolute -bottom-48 left-1/2 size-[46rem] -translate-x-1/2 rounded-full bg-horizon opacity-40 blur-3xl" aria-hidden />
+      <section className="relative hidden overflow-hidden bg-[#060b18] p-12 text-white lg:flex lg:flex-col">
+        <div className="pointer-events-none absolute -bottom-48 left-1/2 size-[46rem] -translate-x-1/2 rounded-full bg-horizon opacity-30 blur-3xl" aria-hidden />
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.07]"
-          style={{ backgroundImage: 'linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)', backgroundSize: '48px 48px' }}
+          className="pointer-events-none absolute inset-0 opacity-[0.09]"
+          style={{ backgroundImage: 'linear-gradient(#22d3ee 1px, transparent 1px), linear-gradient(90deg, #22d3ee 1px, transparent 1px)', backgroundSize: '48px 48px' }}
           aria-hidden
         />
-        <div className="relative [&_.text-muted-foreground]:text-white/60">
+        <div className="relative [&_.text-primary]:text-cyan-300">
           <Logo />
         </div>
         <div className="relative mt-auto max-w-md">
@@ -28,7 +28,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <ul className="mt-10 space-y-5">
             {highlights.map((h) => (
               <li key={h.title} className="flex gap-4">
-                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-white/10 ring-1 ring-white/15">
+                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-300/25 shadow-[0_0_20px_-6px_rgb(34_211_238/0.6)]">
                   <h.icon className="size-5" aria-hidden />
                 </span>
                 <span>

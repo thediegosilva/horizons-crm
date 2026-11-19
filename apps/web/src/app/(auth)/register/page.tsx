@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { errorProps, Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { api, ApiError, errorMessage } from '@/lib/api';
 
 export default function RegisterPage() {
@@ -55,7 +56,7 @@ export default function RegisterPage() {
           <Input id="email" type="email" autoComplete="email" {...register('email')} {...errorProps('email', errors.email?.message)} />
         </Field>
         <Field label="Senha" htmlFor="password" error={errors.password?.message} hint="Mínimo de 8 caracteres, com maiúscula, minúscula e número.">
-          <Input id="password" type="password" autoComplete="new-password" {...register('password')} {...errorProps('password', errors.password?.message)} />
+          <PasswordInput id="password" autoComplete="new-password" {...register('password')} {...errorProps('password', errors.password?.message)} />
         </Field>
         <Button type="submit" size="lg" className="w-full" loading={isSubmitting}>
           Criar conta

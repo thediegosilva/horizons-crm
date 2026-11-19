@@ -23,6 +23,7 @@ import { ConfirmDialog, Dialog, DialogContent, DialogFooter } from '@/components
 import { EmptyState, ErrorState, Skeleton } from '@/components/ui/feedback';
 import { errorProps, Field } from '@/components/ui/field';
 import { Input, Select } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/menu';
 import { Avatar, PageHeader } from '@/components/ui/misc';
 import { Table, TBody, TD, TH, THead, TR } from '@/components/ui/table';
@@ -203,7 +204,7 @@ function CreateUserDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
               <Select id="u-role" {...register('role')}>{ROLES.map((r) => <option key={r} value={r}>{ROLE_LABELS[r]}</option>)}</Select>
             </Field>
             <Field label="Senha inicial" htmlFor="u-password" required error={errors.password?.message} hint="Mínimo de 8 caracteres, com maiúscula, minúscula e número.">
-              <Input id="u-password" type="password" autoComplete="new-password" {...register('password')} {...errorProps('u-password', errors.password?.message)} />
+              <PasswordInput id="u-password" autoComplete="new-password" {...register('password')} {...errorProps('u-password', errors.password?.message)} />
             </Field>
           </div>
           <DialogFooter>
@@ -270,7 +271,7 @@ function ResetPasswordDialog({ user, onClose }: { user: ManagedUser | null; onCl
         <form onSubmit={handleSubmit((d) => mutation.mutate(d))} noValidate>
           <div className="px-6 py-5">
             <Field label="Nova senha" htmlFor="r-password" required error={errors.password?.message} hint="O usuário será desconectado de todos os dispositivos.">
-              <Input id="r-password" type="password" autoComplete="new-password" autoFocus {...register('password')} {...errorProps('r-password', errors.password?.message)} />
+              <PasswordInput id="r-password" autoComplete="new-password" autoFocus {...register('password')} {...errorProps('r-password', errors.password?.message)} />
             </Field>
           </div>
           <DialogFooter>

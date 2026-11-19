@@ -1,23 +1,77 @@
 <div align="center">
 
-<img src="apps/web/public/icon.svg" width="72" alt="Horizons CRM" />
+<img src="docs/cover.jpg" alt="Horizons CRM — CRM inteligente para acelerar seu crescimento" width="100%" />
 
-# HORIZONS CRM
+<br />
 
-**CRM comercial multiempresa (SaaS) para pequenas empresas** — por Diego Oliveira da Silva
+# Horizons CRM
+
+### CRM comercial multiempresa (SaaS) para pequenas empresas
+
 Clientes · Produtos e serviços · Pedidos · Financeiro · Relatórios · Usuários e permissões
 
-![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
-![React](https://img.shields.io/badge/React-19-149eca?logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript&logoColor=white)
-![Express](https://img.shields.io/badge/Express-5-000?logo=express)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-336791?logo=postgresql&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-7-2d3748?logo=prisma)
-![Tests](https://img.shields.io/badge/testes-99%20passando-2ea44f)
+<br />
 
-<img src="docs/screenshots/dashboard.png" alt="Dashboard do Horizons CRM" width="900" />
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-0b1224?style=for-the-badge&logo=react&logoColor=22d3ee)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-0b1224?style=for-the-badge&logo=tailwindcss&logoColor=38bdf8)](https://tailwindcss.com)
+<br />
+[![Express](https://img.shields.io/badge/Express-5-0b1224?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org)
+[![Prisma](https://img.shields.io/badge/Prisma-7-2d3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io)
+[![Docker](https://img.shields.io/badge/Docker-pronto-1d63ed?style=for-the-badge&logo=docker&logoColor=white)](#opção-1--docker-recomendado)
+[![Testes](https://img.shields.io/badge/testes-99%20passando-16a34a?style=for-the-badge&logo=vitest&logoColor=white)](#testes)
+
+<br />
+
+[**Funcionalidades**](#funcionalidades) &nbsp;•&nbsp;
+[**Capturas de tela**](#capturas-de-tela) &nbsp;•&nbsp;
+[**Como rodar**](#executando-o-projeto) &nbsp;•&nbsp;
+[**Contas demo**](#credenciais-de-demonstração) &nbsp;•&nbsp;
+[**API**](#documentação-da-api) &nbsp;•&nbsp;
+[**Arquitetura**](docs/ARCHITECTURE.md)
+
+<br />
+
+<img src="docs/screenshots/dashboard.png" alt="Dashboard do Horizons CRM no tema escuro" width="100%" />
 
 </div>
+
+<br />
+
+## Destaques
+
+<table>
+  <tr>
+    <td width="33%" valign="top">
+      <h4>📊 Indicadores reais</h4>
+      Faturamento, vendas, conversão e fluxo de caixa calculados direto do banco. Nada é mockado.
+    </td>
+    <td width="33%" valign="top">
+      <h4>🧾 Pedidos ponta a ponta</h4>
+      Orçamento → pagamento → conclusão, com reserva de estoque atômica e financeiro gerado automaticamente.
+    </td>
+    <td width="33%" valign="top">
+      <h4>🏢 Multiempresa (SaaS)</h4>
+      Cada organização é isolada no servidor; acesso a dados de outra empresa retorna 404.
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <h4>🔐 Seguro por padrão</h4>
+      argon2id, sessão em cookie <code>httpOnly</code>, RBAC no servidor, rate limit e proteção CSRF.
+    </td>
+    <td valign="top">
+      <h4>🎨 Interface caprichada</h4>
+      Design system próprio, tema escuro navy + ciano, tema claro, responsivo e acessível (teclado e ARIA).
+    </td>
+    <td valign="top">
+      <h4>✅ Testado de verdade</h4>
+      99 testes, incluindo integração com PostgreSQL real, permissões e isolamento entre empresas.
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -25,6 +79,7 @@ Clientes · Produtos e serviços · Pedidos · Financeiro · Relatórios · Usu�
 
 - [Apresentação](#apresentação)
 - [Funcionalidades](#funcionalidades)
+- [Capturas de tela](#capturas-de-tela)
 - [Tecnologias](#tecnologias)
 - [Arquitetura](#arquitetura)
 - [Estrutura de diretórios](#estrutura-de-diretórios)
@@ -35,7 +90,6 @@ Clientes · Produtos e serviços · Pedidos · Financeiro · Relatórios · Usu�
 - [Documentação da API](#documentação-da-api)
 - [Segurança](#segurança)
 - [Regras de negócio](#regras-de-negócio)
-- [Capturas de tela](#capturas-de-tela)
 - [Limitações conhecidas](#limitações-conhecidas)
 
 ## Apresentação
@@ -66,7 +120,32 @@ demonstração são claramente identificados como fictícios.
 | **Relatórios** | Vendas por período, clientes cadastrados, produtos mais vendidos, faturamento (receitas × despesas) e pedidos por status — com exportação **CSV** compatível com Excel |
 | **Usuários e permissões** | Administrador, Gerente e Operador; criação, edição, desativação (revoga sessões) e redefinição de senha; matriz de permissões |
 | **Notificações** | Estoque baixo, pagamento confirmado e pedido cancelado, com contador de não lidas |
-| **Interface** | Tema claro/escuro/sistema, sidebar, layout responsivo (desktop, tablet e celular), estados de carregamento, vazios e de erro, toasts, confirmação antes de ações destrutivas, filtros sincronizados com a URL |
+| **Interface** | Tema escuro (padrão), claro ou do sistema, mostrar/ocultar senha, sidebar, layout responsivo (desktop, tablet e celular), estados de carregamento, vazios e de erro, toasts, confirmação antes de ações destrutivas, filtros sincronizados com a URL |
+
+## Capturas de tela
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/login.png" alt="Tela de login" /><p align="center"><b>Login</b> com acesso rápido às contas de demonstração</p></td>
+    <td width="50%"><img src="docs/screenshots/dashboard-light.png" alt="Dashboard no tema claro" /><p align="center"><b>Dashboard</b> no tema claro</p></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/pedidos.png" alt="Lista de pedidos" /><p align="center"><b>Pedidos</b> com filtros por status e período</p></td>
+    <td><img src="docs/screenshots/pedido-detalhe.png" alt="Detalhe do pedido" /><p align="center"><b>Pedido</b> com fluxo de status, financeiro e histórico</p></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/novo-pedido.png" alt="Novo pedido" /><p align="center"><b>Novo pedido</b> com totais em tempo real</p></td>
+    <td><img src="docs/screenshots/financeiro.png" alt="Financeiro" /><p align="center"><b>Financeiro</b> com fluxo de caixa de 12 meses</p></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/relatorios.png" alt="Relatórios" /><p align="center"><b>Relatórios</b> com exportação CSV</p></td>
+    <td><img src="docs/screenshots/usuarios.png" alt="Usuários" /><p align="center"><b>Usuários</b> e matriz de permissões</p></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/cliente.png" alt="Detalhe do cliente" /><p align="center"><b>Cliente</b> com histórico de pedidos e total comprado</p></td>
+    <td align="center"><img src="docs/screenshots/mobile.png" alt="Versão mobile" width="230" /><p align="center"><b>Responsivo</b> em celulares</p></td>
+  </tr>
+</table>
 
 ## Tecnologias
 
@@ -74,7 +153,7 @@ demonstração são claramente identificados como fictícios.
 |---|---|---|
 | Front-end | **Next.js 16** (App Router), **React 19**, **TypeScript** | Roteamento, build otimizado e proxy integrado para a API |
 | UI | **Tailwind CSS 4**, **Radix UI** (primitivas acessíveis), **Lucide**, design system próprio | Acessibilidade (foco, teclado, ARIA) sem depender de template genérico |
-| Gráficos | **Recharts** | Gráficos declarativos; paleta validada para daltonismo nos temas claro e escuro |
+| Gráficos | **Recharts** | Gráficos declarativos com degradês; séries em ciano × violeta, distinguíveis também por luminosidade |
 | Estado/forms | **TanStack Query**, **React Hook Form** | Cache, loading/erro padronizados e formulários performáticos |
 | Back-end | **Node.js 22**, **Express 5**, **TypeScript** | API REST simples e consolidada; Express 5 trata erros assíncronos nativamente |
 | Validação | **Zod 4** (pacote compartilhado) | Os mesmos schemas validam o formulário, a API e geram o OpenAPI |
@@ -133,7 +212,7 @@ horizons-crm/
 │           ├── hooks/            # auth, estado na URL, exclusão
 │           └── lib/              # cliente HTTP, formatação, tipos
 ├── packages/shared/              # schemas Zod, enums, permissões, regras de pedido
-├── docs/                         # arquitetura e capturas de tela
+├── docs/                         # arquitetura, capa e capturas de tela
 ├── docker-compose.yml
 └── .github/workflows/ci.yml
 ```
@@ -315,16 +394,6 @@ Orçamento ──▶ Aguardando pagamento ──▶ Pago ──▶ Em processame
 | Relatórios | ✅ | ✅ | — |
 | Usuários | ✅ | — | — |
 
-## Capturas de tela
-
-| | |
-|---|---|
-| ![Login](docs/screenshots/login.png) **Login** com acesso às contas de demonstração | ![Dashboard escuro](docs/screenshots/dashboard-dark.png) **Dashboard** no tema escuro |
-| ![Pedidos](docs/screenshots/pedidos.png) **Pedidos** com filtros por status e período | ![Detalhe do pedido](docs/screenshots/pedido-detalhe.png) **Pedido** com fluxo de status, financeiro e histórico |
-| ![Novo pedido](docs/screenshots/novo-pedido-dark.png) **Novo pedido** com totais em tempo real | ![Financeiro](docs/screenshots/financeiro.png) **Financeiro** com fluxo de caixa |
-| ![Relatórios](docs/screenshots/relatorios.png) **Relatórios** com exportação CSV | ![Usuários](docs/screenshots/usuarios.png) **Usuários** e matriz de permissões |
-| ![Cliente](docs/screenshots/cliente.png) **Cliente** com histórico de pedidos | <img src="docs/screenshots/mobile.png" width="260" alt="Versão mobile" /> **Responsivo** em celulares |
-
 ## Limitações conhecidas
 
 - **Sem gateway de pagamento:** a confirmação de pagamento é manual, como definido no escopo desta versão.
@@ -342,4 +411,12 @@ Orçamento ──▶ Aguardando pagamento ──▶ Pago ──▶ Em processame
 
 ## Autor
 
-Desenvolvido por **Diego Oliveira da Silva**.
+<div align="center">
+
+<img src="apps/web/public/icon.svg" width="56" alt="" />
+
+Desenvolvido por **Diego Oliveira da Silva**
+
+[![GitHub](https://img.shields.io/badge/GitHub-thediegosilva-0b1224?style=for-the-badge&logo=github&logoColor=white)](https://github.com/thediegosilva)
+
+</div>
